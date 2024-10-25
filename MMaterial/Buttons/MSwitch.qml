@@ -10,10 +10,12 @@ Checkable {
 
     property PaletteBasic accent: Theme.primary
 
+    property bool text_is_left: false
+
     property alias text: _label.text
     property alias label: _label
 
-    implicitWidth: _switch.width + _label.anchors.leftMargin + _label.implicitWidth
+    implicitWidth: _switch.width + _label.anchors.leftMargin + _label.anchors.rightMargin + _label.implicitWidth
     implicitHeight: {
         if(size == Size.Grade.M)
             return Size.pixel20
@@ -28,6 +30,10 @@ Checkable {
         width: height * 1.6
 
         radius: 100
+        anchors.right: {
+            if (_root.text_is_left)
+                return _root.right
+        }
 
         states: [
             State {
@@ -120,8 +126,10 @@ Checkable {
         id: _label
 
         anchors{
-            left: _switch.right; leftMargin: Size.pixel12
-            right: _root.right
+            left: _root.text_is_left ? _root.left : _switch.right
+            right: _root.text_is_left ? _switch.left : _root.right
+            leftMargin: _root.text_is_left ? 0 : Size.pixel12
+            rightMargin: _root.text_is_left ? Size.pixel12 : 0
         }
 
         height: _root.height
@@ -129,7 +137,7 @@ Checkable {
         visible: text.length > 0
         verticalAlignment: Qt.AlignVCenter
         maximumLineCount: 1
-        elide: Text.ElideRight
+        elide: _root.text_is_left ? Text.ElideNone : Text.ElideRight
         wrapMode: Text.NoWrap
     }
 }
